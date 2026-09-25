@@ -111,15 +111,15 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" required>
             </div>
-            <button onclick="signUp()">Register >></button>
+            <button onclick="signUp()">Register ></button>
             <div id="status"></div>
         </div>
     </div>
 
     <script>
-        // База данных будет подключена на следующем шаге
+        // Ваши личные ключи базы данных
         const SUPABASE_URL = "https://supabase.co"; 
-        const SUPABASE_ANON_KEY = "your-anon-key";
+        const SUPABASE_ANON_KEY = "sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc";
 
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
