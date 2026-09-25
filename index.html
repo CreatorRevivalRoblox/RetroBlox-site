@@ -1,21 +1,149 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RetroBlox Revival 2009</title>
+    <title>ROBLOX.com - Create Account</title>
+    <!-- Connecting Supabase Database Library -->
+    <script src="https://jsdelivr.net"></script>
     <style>
-        body {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
+        /* Стиль оригинального сайта ROBLOX 2009 года */
+        body { 
+            background-color: #eeeeee; 
+            color: #000000; 
+            font-family: Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            font-size: 12px;
         }
-        h1 { color: #ff6600; }
+        /* Синяя классическая шапка */
+        .roblox-header {
+            background-color: #003366;
+            padding: 10px 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+            letter-spacing: 1px;
+            border-bottom: 3px solid #002244;
+            text-align: left;
+        }
+        .roblox-header span {
+            color: #ffcc00;
+        }
+        /* Главный контейнер страницы */
+        .main-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #ffffff;
+            border: 1px solid #555555;
+            padding: 20px;
+        }
+        h2 {
+            color: #003366;
+            font-size: 18px;
+            margin-top: 0;
+            border-bottom: 1px dashed #555555;
+            padding-bottom: 8px;
+            text-align: left;
+        }
+        /* Окно формы в стиле старых таблиц */
+        .registration-table {
+            width: 450px;
+            margin: 20px 0;
+            background: #f5f5f5;
+            border: 1px solid #cccccc;
+            padding: 15px;
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #333333;
+        }
+        input { 
+            width: 90%; 
+            padding: 4px; 
+            border: 1px solid #777777; 
+            font-family: Verdana, sans-serif;
+            font-size: 12px;
+        }
+        /* Та самая легендарная зеленая кнопка */
+        button { 
+            background-color: #00cc00; 
+            color: white; 
+            border: 2px solid #009900; 
+            padding: 6px 15px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        button:hover { 
+            background-color: #00ee00; 
+        }
+        #status { 
+            margin-top: 15px; 
+            font-weight: bold;
+            color: #cc0000; 
+        }
     </style>
 </head>
 <body>
-    <h1>RetroBlox - site</h1>
-    <p>Добро пожаловать! Этот сайт посвящен роблокс ревайвалу 2009 года.</p>
+
+    <!-- Синий хэдер Roblox -->
+    <div class="roblox-header">
+        R<span>O</span>BLOX
+    </div>
+
+    <div class="main-container">
+        <h2>RetroBlox 2009 - Sign Up</h2>
+        <p>Register a new account to build, visit places, and play with friends!</p>
+
+        <div class="registration-table">
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button onclick="signUp()">Register >></button>
+            <div id="status"></div>
+        </div>
+    </div>
+
+    <script>
+        // База данных будет подключена на следующем шаге
+        const SUPABASE_URL = "https://supabase.co"; 
+        const SUPABASE_ANON_KEY = "your-anon-key";
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function signUp() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const statusDiv = document.getElementById('status');
+
+            statusDiv.innerText = "Connecting to server...";
+            statusDiv.style.color = "#003366";
+
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                statusDiv.innerText = "Error: " + error.message;
+                statusDiv.style.color = "#cc0000";
+            } else {
+                statusDiv.innerText = "Success! Please check your email to confirm registration.";
+                statusDiv.style.color = "#006600";
+            }
+        }
+    </script>
 </body>
 </html>
