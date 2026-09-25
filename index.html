@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>ROBLOX.com - Create Account</title>
-    <!-- Connecting Supabase Database Library -->
-    <script src="https://jsdelivr.net"></script>
+    <!-- Правильное подключение библиотеки Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         /* Стиль оригинального сайта ROBLOX 2009 года */
         body { 
@@ -117,11 +117,11 @@
     </div>
 
     <script>
-        // Ваши личные ключи базы данных
-        const SUPABASE_URL = "https://supabase.co"; 
+        const SUPABASE_URL = "https://cgoirdfucviaokuuevse.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc";
 
-       const supabase = supabase.supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Исправленный запуск клиента базы данных
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function signUp() {
             const email = document.getElementById('email').value;
@@ -131,7 +131,7 @@
             statusDiv.innerText = "Connecting to server...";
             statusDiv.style.color = "#003366";
 
-            const { data, error } = await supabase.auth.signUp({
+            const { data, error } = await supabaseClient.auth.signUp({
                 email: email,
                 password: password,
             });
