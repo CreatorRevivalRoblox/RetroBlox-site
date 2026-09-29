@@ -29,18 +29,31 @@
         .roblox-header .logo span {
             color: #ffcc00;
         }
-        /* Ретро-счётчик валюты в шапке (показывается после регистрации) */
+        
+        /* Ретро-панель валюты с оригинальными иконками */
         .currency-box {
-            display: none; /* Скрыт до регистрации */
+            display: none; /* Скрыта до регистрации */
             font-size: 11px;
             color: #ffffff;
             font-weight: normal;
             background: #002244;
-            padding: 5px 10px;
+            padding: 4px 10px;
             border: 1px solid #0055aa;
         }
-        .robux { color: #00cc00; font-weight: bold; margin-right: 15px; }
-        .tickets { color: #ffcc00; font-weight: bold; }
+        .currency-item {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+        .currency-item img {
+            width: 16px;
+            height: 16px;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        .robux-count { color: #00cc00; }
+        .tickets-count { color: #ffcc00; }
 
         /* Панель старого ретро-меню */
         .roblox-menu {
@@ -145,12 +158,20 @@
 </head>
 <body>
 
-    <!-- Синий хэдер с логотипом и балансом валюты -->
+    <!-- Синий хэдер с логотипом и оригинальными иконками валют -->
     <div class="roblox-header">
         <div class="logo">R<span>O</span>BLOX</div>
         <div id="currency" class="currency-box">
-            <span class="robux">R$ 100</span>
-            <span class="tickets">Tickets 10</span>
+            <!-- Оригинальная иконка Робукса 2009 года -->
+            <span class="currency-item">
+                <img src="https://rbxcdn.com" alt="R$">
+                <span class="robux-count">100</span>
+            </span>
+            <!-- Оригинальная иконка Тикета 2009 года -->
+            <span class="currency-item">
+                <img src="https://rbxcdn.com" alt="Tx">
+                <span class="tickets-count">10</span>
+            </span>
         </div>
     </div>
 
@@ -214,7 +235,7 @@
             statusDiv.style.color = "#003366";
 
             setTimeout(() => {
-                // Скачиваем файл аккаунта, как в прошлом шаге
+                // Скачиваем файл аккаунта
                 const text = "Account Details!\nUsername: " + username + "\nPassword: " + password;
                 const blob = new Blob([text], { type: "text/plain" });
                 const anchor = document.createElement("a");
@@ -222,15 +243,10 @@
                 anchor.href = window.URL.createObjectURL(blob);
                 anchor.click();
 
-                // МАГИЯ ОБНОВЛЕНИЯ СТРАНИЦЫ
-                // Скрываем форму регистрации
+                // Обновление страницы без перезагрузки
                 document.getElementById('registerSection').style.display = 'none';
-                
-                // Включаем отображение баланса Робуксов/Тикетов и меню
                 document.getElementById('currency').style.display = 'block';
                 document.getElementById('menuPanel').style.display = 'block';
-                
-                // Включаем блок "В разработке" и приветствуем игрока по нику
                 document.getElementById('userGreeting').innerText = username;
                 document.getElementById('dashboardSection').style.display = 'block';
 
