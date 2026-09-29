@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>ROBLOX.com - Create Account</title>
-    <!-- Правильное подключение библиотеки Supabase через CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Connecting Supabase Database Library -->
+    <script src="https://jsdelivr.net"></script>
     <style>
         /* Стиль оригинального сайта ROBLOX 2009 года */
         body { 
@@ -89,6 +89,18 @@
             font-weight: bold;
             color: #cc0000; 
         }
+        /* Ссылка для взломанных аккаунтов */
+        .recovery-link {
+            margin-top: 15px;
+            display: block;
+            color: #003366;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .recovery-link:hover {
+            color: #ff6600;
+        }
     </style>
 </head>
 <body>
@@ -104,8 +116,12 @@
 
         <div class="registration-table">
             <div class="form-group">
-                <label for="email">Email Address:</label>
-                <input type="email" id="email" required>
+                <label for="username">Choose Username:</label>
+                <input type="text" id="username" required placeholder="e.g. Builderman">
+            </div>
+            <div class="form-group">
+                <label for="email">Your Real Email (For Security):</label>
+                <input type="email" id="email" required placeholder="email@example.com">
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
@@ -113,21 +129,30 @@
             </div>
             <button onclick="signUp()">Register ></button>
             <div id="status"></div>
+            
+            <!-- Твоя придуманная фича для восстановления аккаунта -->
+            <a class="recovery-link" onclick="recoverAccount()">Did you get hacked or forgot your password? Click here to get a recovery code sent to your email.</a>
         </div>
     </div>
 
     <script>
-        const SUPABASE_URL = "https://cgoirdfucviaokuuevse.supabase.co"; 
+        const SUPABASE_URL = "https://supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc";
 
-        // Способ вызова функции из глобального окна браузера для тегов <script>
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function signUp() {
-            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const statusDiv = document.getElementById('status');
+
+            if (!username || !email || !password) {
+                statusDiv.innerText = "Error: Please fill in all fields.";
+                statusDiv.style.color = "#cc0000";
+                return;
+            }
 
             statusDiv.innerText = "Connecting to server...";
             statusDiv.style.color = "#003366";
@@ -135,13 +160,37 @@
             const { data, error } = await supabaseClient.auth.signUp({
                 email: email,
                 password: password,
+                options: {
+                    data: { display_name: username }
+                }
             });
 
             if (error) {
                 statusDiv.innerText = "Error: " + error.message;
                 statusDiv.style.color = "#cc0000";
             } else {
-                statusDiv.innerText = "Success! Please check your email to confirm registration.";
+                statusDiv.innerText = "Success! Account '" + username + "' has been registered. Welcome to 2009!";
+                statusDiv.style.color = "#006600";
+            }
+        }
+
+        // Функция восстановления аккаунта
+        async function recoverAccount() {
+            const email = prompt("Enter your registered Email address to receive the recovery code:");
+            const statusDiv = document.getElementById('status');
+            
+            if (!email) return;
+
+            statusDiv.innerText = "Sending recovery code to " + email + "...";
+            statusDiv.style.color = "#003366";
+
+            const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email);
+
+            if (error) {
+                statusDiv.innerText = "Error: " + error.message;
+                statusDiv.style.color = "#cc0000";
+            } else {
+                statusDiv.innerText = "Success! Recovery code sent. Check your email inbox!";
                 statusDiv.style.color = "#006600";
             }
         }
