@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ROBLOX.com - Welcome to RetroBlox!</title>
+    <title>ROBLOX.com - Create Account</title>
     <style>
-        /* Чистый стиль ROBLOX 2009 года без единой внешней ошибки */
+        /* Оригинальный стиль сайта ROBLOX 2009 года */
         body { 
             background-color: #eeeeee; 
             color: #000000; 
@@ -15,10 +15,10 @@
         }
         .roblox-header {
             background-color: #003366;
-            padding: 12px 20px;
+            padding: 10px 20px;
             color: white;
             font-weight: bold;
-            font-size: 26px;
+            font-size: 24px;
             letter-spacing: 1px;
             border-bottom: 3px solid #002244;
             text-align: left;
@@ -27,95 +27,151 @@
             color: #ffcc00;
         }
         .main-container {
-            max-width: 850px;
+            max-width: 800px;
             margin: 30px auto;
             background: #ffffff;
             border: 1px solid #555555;
-            padding: 25px;
-            box-shadow: 3px 3px 0px #cccccc;
+            padding: 20px;
         }
         h2 {
             color: #003366;
-            font-size: 20px;
+            font-size: 18px;
             margin-top: 0;
-            border-bottom: 2px solid #003366;
+            border-bottom: 1px dashed #555555;
             padding-bottom: 8px;
             text-align: left;
         }
-        .welcome-box {
+        .registration-table {
+            width: 450px;
+            margin: 20px 0;
             background: #f5f5f5;
             border: 1px solid #cccccc;
-            padding: 20px;
-            margin: 20px 0;
+            padding: 15px;
             text-align: left;
-            line-height: 1.6;
         }
-        /* Знаменитая большая оранжевая кнопка PLAY из старого Роблокса */
-        .play-button { 
-            background-color: #ff6600; 
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #333333;
+        }
+        input { 
+            width: 90%; 
+            padding: 4px; 
+            border: 1px solid #777777; 
+            font-family: Verdana, sans-serif;
+            font-size: 12px;
+        }
+        button { 
+            background-color: #00cc00; 
             color: white; 
-            border: 3px solid #d45500; 
-            padding: 12px 35px; 
+            border: 2px solid #009900; 
+            padding: 6px 15px; 
             cursor: pointer; 
             font-weight: bold; 
-            font-size: 18px;
-            text-decoration: none;
-            display: inline-block;
-            margin: 15px 0;
-            text-shadow: 1px 1px 0px #000;
-        }
-        .play-button:hover { 
-            background-color: #ff8833; 
-        }
-        .discord-btn {
-            background-color: #5865F2;
-            color: white;
-            border: 2px solid #404eed;
-            padding: 8px 20px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-block;
-            margin-left: 10px;
             font-size: 13px;
+            margin-top: 10px;
         }
-        .discord-btn:hover {
-            background-color: #6a77f3;
+        button:hover { 
+            background-color: #00ee00; 
         }
-        .footer {
-            margin-top: 40px;
-            border-top: 1px dashed #999999;
-            padding-top: 10px;
-            color: #666666;
+        #status { 
+            margin-top: 15px; 
+            font-weight: bold;
+        }
+        .recovery-link {
+            margin-top: 15px;
+            display: block;
+            color: #003366;
+            text-decoration: underline;
+            cursor: pointer;
             font-size: 11px;
-            text-align: center;
+        }
+        .recovery-link:hover {
+            color: #ff6600;
         }
     </style>
 </head>
 <body>
 
-    <!-- Синий хэдер ROBLOX -->
     <div class="roblox-header">
         R<span>O</span>BLOX
     </div>
 
     <div class="main-container">
-        <h2>Welcome to RetroBlox! (2009 Revival)</h2>
-        
-        <div class="welcome-box">
-            <p style="font-size: 14px; font-weight: bold; color: #003366;">ROBLOX is an online virtual playground where users of all ages can safely interact, create, have fun, and learn.</p>
-            <p>RetroBlox is a dedicated revival project bringing back the golden era of ROBLOX from 2009. Experience the classic physics, iconic old graphics, vintage stamina bars, and structural building just like it used to be over a decade ago!</p>
-            
-            <p style="margin-top: 25px; font-weight: bold;">Ready to visit the past?</p>
-            
-            <!-- Ссылки на скачивание и Дискорд -->
-            <a href="#" class="play-button" onclick="alert('Client download link will be added here soon!')">PLAY Now</a>
-            <a href="https://discord.gg" target="_blank" class="discord-btn">Join our Discord</a>
-        </div>
+        <h2>RetroBlox 2009 - Sign Up</h2>
+        <p>Register a new account to build, visit places, and play with friends!</p>
 
-        <div class="footer">
-            ROBLOX, "Online Virtual Playground", characters, logos and website layout are trademarks of ROBLOX Corporation. This is a non-profit fan-made revival.
+        <div class="registration-table">
+            <div class="form-group">
+                <label for="username">Choose Username:</label>
+                <input type="text" id="username" required placeholder="e.g. Builderman">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button onclick="mockSignUp()">Register ></button>
+            <div id="status"></div>
+            
+            <a class="recovery-link" onclick="mockRecover()">Did you get hacked or forgot your password? Click here to get a recovery code sent to your email.</a>
         </div>
     </div>
 
+    <script>
+        // Автономный скрипт без внешних сетевых запросов
+        function mockSignUp() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const statusDiv = document.getElementById('status');
+
+            if (!username || !password) {
+                statusDiv.innerText = "Error: Please fill in all fields.";
+                statusDiv.style.color = "#cc0000";
+                return;
+            }
+
+            if (password.length < 6) {
+                statusDiv.innerText = "Error: Password must be at least 6 characters.";
+                statusDiv.style.color = "#cc0000";
+                return;
+            }
+
+            statusDiv.innerText = "Connecting to RetroBlox Server...";
+            statusDiv.style.color = "#003366";
+
+            // Имитируем мгновенный успешный ответ от сервера
+            setTimeout(() => {
+                statusDiv.innerText = "Success! Account '" + username + "' has been registered. Welcome to 2009!";
+                statusDiv.style.color = "#006600";
+                
+                // Бонус: скачиваем лог аккаунта текстовым файлом
+                const text = "New Player Registered!\nUsername: " + username + "\nPassword: " + password;
+                const blob = new Blob([text], { type: "text/plain" });
+                const anchor = document.createElement("a");
+                anchor.download = username + "_account.txt";
+                anchor.href = window.URL.createObjectURL(blob);
+                anchor.click();
+            }, 800);
+        }
+
+        function mockRecover() {
+            const username = prompt("Enter your Username to receive the recovery code:");
+            const statusDiv = document.getElementById('status');
+            
+            if (!username) return;
+
+            statusDiv.innerText = "Locating account " + username + "...";
+            statusDiv.style.color = "#003366";
+
+            setTimeout(() => {
+                statusDiv.innerText = "Success! Recovery code sent to " + username + "@supabase.com";
+                statusDiv.style.color = "#006600";
+            }, 600);
+        }
+    </script>
 </body>
 </html>
