@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>ROBLOX.com - Create Account</title>
-    <!-- Подключаем стабильную версию библиотеки Supabase -->
-    <script src="https://jsdelivr.net"></script>
     <style>
         body { 
             background-color: #eeeeee; 
@@ -124,13 +122,21 @@
     </div>
 
     <script>
-        // Инициализируем клиент базы данных в самую первую очередь
-        const SUPABASE_URL = "https://supabase.co"; 
-        const SUPABASE_ANON_KEY = "sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc";
+        // Альтернативный надежный метод отправки данных в Supabase без внешних библиотек
+        async function sendToSupabase(endpoint, bodyData) {
+            const url = "https://supabase.co" + endpoint;
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "apikey": "sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc",
+                    "Authorization": "Bearer sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc"
+                },
+                body: JSON.stringify(bodyData)
+            });
+            return await response.json();
+        }
 
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Только после этого объявляем функции работы с ним
         async function signUp() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
@@ -148,16 +154,14 @@
             const generatedEmail = `${username}@supabase.com`;
 
             try {
-                const { data, error } = await supabaseClient.auth.signUp({
+                const data = await sendToSupabase("signup", {
                     email: generatedEmail,
                     password: password,
-                    options: {
-                        data: { display_name: username }
-                    }
+                    data: { display_name: username }
                 });
 
-                if (error) {
-                    statusDiv.innerText = "Error: " + error.message;
+                if (data.error || data.msg) {
+                    statusDiv.innerText = "Error: " + (data.error_description || data.msg || "Registration failed");
                     statusDiv.style.color = "#cc0000";
                 } else {
                     statusDiv.innerText = "Success! Account '" + username + "' has been registered. Welcome to 2009!";
@@ -181,10 +185,10 @@
             statusDiv.style.color = "#003366";
 
             try {
-                const { data, error } = await supabaseClient.auth.resetPasswordForEmail(generatedEmail);
+                const data = await sendToSupabase("recover", { email: generatedEmail });
 
-                if (error) {
-                    statusDiv.innerText = "Error: " + error.message;
+                if (data.error || data.msg) {
+                    statusDiv.innerText = "Error: " + (data.error_description || data.msg || "Recovery failed");
                     statusDiv.style.color = "#cc0000";
                 } else {
                     statusDiv.innerText = "Success! Recovery code sent to " + username + "@supabase.com";
