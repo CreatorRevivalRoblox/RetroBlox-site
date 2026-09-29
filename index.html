@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>ROBLOX.com - Create Account</title>
-    <!-- Подключаем самую стабильную версию библиотеки Supabase -->
+    <!-- Подключаем стабильную версию библиотеки Supabase -->
     <script src="https://jsdelivr.net"></script>
     <style>
-        /* Стиль оригинального сайта ROBLOX 2009 года */
         body { 
             background-color: #eeeeee; 
             color: #000000; 
@@ -15,7 +14,6 @@
             padding: 0; 
             font-size: 12px;
         }
-        /* Синяя классическая шапка */
         .roblox-header {
             background-color: #003366;
             padding: 10px 20px;
@@ -29,7 +27,6 @@
         .roblox-header span {
             color: #ffcc00;
         }
-        /* Главный контейнер страницы */
         .main-container {
             max-width: 800px;
             margin: 30px auto;
@@ -45,7 +42,6 @@
             padding-bottom: 8px;
             text-align: left;
         }
-        /* Окно формы в стиле старых таблиц */
         .registration-table {
             width: 450px;
             margin: 20px 0;
@@ -70,7 +66,6 @@
             font-family: Verdana, sans-serif;
             font-size: 12px;
         }
-        /* Та самая легендарная зеленая кнопка */
         button { 
             background-color: #00cc00; 
             color: white; 
@@ -89,7 +84,6 @@
             font-weight: bold;
             color: #cc0000; 
         }
-        /* Ссылка для восстановления */
         .recovery-link {
             margin-top: 15px;
             display: block;
@@ -105,7 +99,6 @@
 </head>
 <body>
 
-    <!-- Синий хэдер Roblox -->
     <div class="roblox-header">
         R<span>O</span>BLOX
     </div>
@@ -126,18 +119,18 @@
             <button onclick="signUp()">Register ></button>
             <div id="status"></div>
             
-            <!-- Фича восстановления аккаунта по Никнейму -->
             <a class="recovery-link" onclick="recoverAccount()">Did you get hacked or forgot your password? Click here to get a recovery code sent to your email.</a>
         </div>
     </div>
 
     <script>
-        const SUPABASE_URL = "https://cgoirdfucviaokuuevse.supabase.co"; 
+        // Инициализируем клиент базы данных в самую первую очередь
+        const SUPABASE_URL = "https://supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc";
 
-        // Самый надежный запуск глобального клиента без деструктуризации
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Только после этого объявляем функции работы с ним
         async function signUp() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
@@ -152,7 +145,6 @@
             statusDiv.innerText = "Connecting to server...";
             statusDiv.style.color = "#003366";
 
-            // Скрытый email из никнейма по твоему плану
             const generatedEmail = `${username}@supabase.com`;
 
             try {
