@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ROBLOX.com - Create Account</title>
-    <!-- Connecting Supabase Database Library -->
+    <!-- Подключаем самую стабильную версию библиотеки Supabase -->
     <script src="https://jsdelivr.net"></script>
     <style>
         /* Стиль оригинального сайта ROBLOX 2009 года */
@@ -132,11 +132,11 @@
     </div>
 
     <script>
-        const SUPABASE_URL = "https://supabase.co"; 
+        const SUPABASE_URL = "https://cgoirdfucviaokuuevse.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc";
 
-        const { createClient } = supabase;
-        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Самый надежный запуск глобального клиента без деструктуризации
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function signUp() {
             const username = document.getElementById('username').value.trim();
@@ -152,47 +152,55 @@
             statusDiv.innerText = "Connecting to server...";
             statusDiv.style.color = "#003366";
 
-            // Генерируем скрытый email на базе никнейма
+            // Скрытый email из никнейма по твоему плану
             const generatedEmail = `${username}@supabase.com`;
 
-            const { data, error } = await supabaseClient.auth.signUp({
-                email: generatedEmail,
-                password: password,
-                options: {
-                    data: { display_name: username }
-                }
-            });
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: generatedEmail,
+                    password: password,
+                    options: {
+                        data: { display_name: username }
+                    }
+                });
 
-            if (error) {
-                statusDiv.innerText = "Error: " + error.message;
+                if (error) {
+                    statusDiv.innerText = "Error: " + error.message;
+                    statusDiv.style.color = "#cc0000";
+                } else {
+                    statusDiv.innerText = "Success! Account '" + username + "' has been registered. Welcome to 2009!";
+                    statusDiv.style.color = "#006600";
+                }
+            } catch (err) {
+                statusDiv.innerText = "System Error: " + err.message;
                 statusDiv.style.color = "#cc0000";
-            } else {
-                statusDiv.innerText = "Success! Account '" + username + "' has been registered. Welcome to 2009!";
-                statusDiv.style.color = "#006600";
             }
         }
 
-        // Функция восстановления аккаунта по Никнейму
         async function recoverAccount() {
             const username = prompt("Enter your Username to receive the recovery code:");
             const statusDiv = document.getElementById('status');
             
             if (!username) return;
 
-            // Воссоздаем сгенерированную почту из никнейма
             const generatedEmail = `${username.trim()}@supabase.com`;
 
-            statusDiv.innerText = "Sending recovery code to " + username + "'s secure inbox...";
+            statusDiv.innerText = "Sending recovery code...";
             statusDiv.style.color = "#003366";
 
-            const { data, error } = await supabaseClient.auth.resetPasswordForEmail(generatedEmail);
+            try {
+                const { data, error } = await supabaseClient.auth.resetPasswordForEmail(generatedEmail);
 
-            if (error) {
-                statusDiv.innerText = "Error: " + error.message;
+                if (error) {
+                    statusDiv.innerText = "Error: " + error.message;
+                    statusDiv.style.color = "#cc0000";
+                } else {
+                    statusDiv.innerText = "Success! Recovery code sent to " + username + "@supabase.com";
+                    statusDiv.style.color = "#006600";
+                }
+            } catch (err) {
+                statusDiv.innerText = "System Error: " + err.message;
                 statusDiv.style.color = "#cc0000";
-            } else {
-                statusDiv.innerText = "Success! Recovery code sent to " + username + "@supabase.com";
-                statusDiv.style.color = "#006600";
             }
         }
     </script>
