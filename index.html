@@ -89,7 +89,7 @@
             font-weight: bold;
             color: #cc0000; 
         }
-        /* Ссылка для взломанных аккаунтов */
+        /* Ссылка для восстановления */
         .recovery-link {
             margin-top: 15px;
             display: block;
@@ -120,17 +120,13 @@
                 <input type="text" id="username" required placeholder="e.g. Builderman">
             </div>
             <div class="form-group">
-                <label for="email">Your Real Email (For Security):</label>
-                <input type="email" id="email" required placeholder="email@example.com">
-            </div>
-            <div class="form-group">
                 <label for="password">Password:</label>
                 <input type="password" id="password" required>
             </div>
             <button onclick="signUp()">Register ></button>
             <div id="status"></div>
             
-            <!-- Твоя придуманная фича для восстановления аккаунта -->
+            <!-- Фича восстановления аккаунта по Никнейму -->
             <a class="recovery-link" onclick="recoverAccount()">Did you get hacked or forgot your password? Click here to get a recovery code sent to your email.</a>
         </div>
     </div>
@@ -144,11 +140,10 @@
 
         async function signUp() {
             const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const statusDiv = document.getElementById('status');
 
-            if (!username || !email || !password) {
+            if (!username || !password) {
                 statusDiv.innerText = "Error: Please fill in all fields.";
                 statusDiv.style.color = "#cc0000";
                 return;
@@ -157,8 +152,11 @@
             statusDiv.innerText = "Connecting to server...";
             statusDiv.style.color = "#003366";
 
+            // Генерируем скрытый email на базе никнейма
+            const generatedEmail = `${username}@supabase.com`;
+
             const { data, error } = await supabaseClient.auth.signUp({
-                email: email,
+                email: generatedEmail,
                 password: password,
                 options: {
                     data: { display_name: username }
@@ -174,23 +172,26 @@
             }
         }
 
-        // Функция восстановления аккаунта
+        // Функция восстановления аккаунта по Никнейму
         async function recoverAccount() {
-            const email = prompt("Enter your registered Email address to receive the recovery code:");
+            const username = prompt("Enter your Username to receive the recovery code:");
             const statusDiv = document.getElementById('status');
             
-            if (!email) return;
+            if (!username) return;
 
-            statusDiv.innerText = "Sending recovery code to " + email + "...";
+            // Воссоздаем сгенерированную почту из никнейма
+            const generatedEmail = `${username.trim()}@supabase.com`;
+
+            statusDiv.innerText = "Sending recovery code to " + username + "'s secure inbox...";
             statusDiv.style.color = "#003366";
 
-            const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email);
+            const { data, error } = await supabaseClient.auth.resetPasswordForEmail(generatedEmail);
 
             if (error) {
                 statusDiv.innerText = "Error: " + error.message;
                 statusDiv.style.color = "#cc0000";
             } else {
-                statusDiv.innerText = "Success! Recovery code sent. Check your email inbox!";
+                statusDiv.innerText = "Success! Recovery code sent to " + username + "@supabase.com";
                 statusDiv.style.color = "#006600";
             }
         }
