@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>ROBLOX.com</title>
     <style>
-        /* Общий стиль оригинального ROBLOX 2009 */
+        /* Оригинальный стиль сайта ROBLOX 2009 */
         body { 
             background-color: #eeeeee; 
             color: #000000; 
@@ -26,11 +26,11 @@
             justify-content: space-between;
             align-items: center;
         }
-        .roblox-header span {
+        .roblox-header .logo span {
             color: #ffcc00;
         }
         
-        /* Ретро-панель валюты с иконками 2009 года */
+        /* Панель валюты с оригинальными иконками */
         .currency-box {
             display: none; /* Скрыта до регистрации */
             font-size: 11px;
@@ -47,11 +47,10 @@
             font-weight: bold;
         }
         .currency-item img {
-            width: 20px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             margin-right: 5px;
             vertical-align: middle;
-            object-fit: contain;
         }
         .robux-count { color: #00cc00; }
         .tickets-count { color: #ffcc00; }
@@ -131,7 +130,7 @@
         }
         #status { margin-top: 15px; font-weight: bold; }
 
-        /* Блок "В разработке" после входа */
+        /* Блок личного кабинета после входа */
         .dev-box {
             display: none; /* Скрыт до регистрации */
             background: #fff9e6;
@@ -155,31 +154,27 @@
             cursor: pointer;
             font-size: 11px;
         }
+        .recovery-link:hover { color: #ff6600; }
     </style>
 </head>
 <body>
 
-    <!-- Синий хэдер с логотипом и проверенными архивными иконками 2009 года -->
+    <!-- Синий хэдер -->
     <div class="roblox-header">
         <div class="logo">R<span>O</span>BLOX</div>
         <div id="currency" class="currency-box">
-            
-            <!-- Историческая иконка Robux (зеленая купюра/щит) -->
             <span class="currency-item">
-                <img src="https://archive.org" alt="R$">
+                <img src="https://rbxcdn.com" alt="R$">
                 <span class="robux-count">100</span>
             </span>
-            
-            <!-- Историческая иконка Tickets (два билетика) -->
             <span class="currency-item">
-                <img src="https://archive.org" alt="Tx">
+                <img src="https://rbxcdn.com" alt="Tx">
                 <span class="tickets-count">10</span>
             </span>
-            
         </div>
     </div>
 
-    <!-- Панель ставого меню -->
+    <!-- Панель старого ретро-меню -->
     <div id="menuPanel" class="roblox-menu">
         <a href="#" onclick="alert('Games list is under construction!')">Games</a>
         <a href="#" onclick="alert('Catalog is under construction!')">Catalog</a>
@@ -202,9 +197,9 @@
                     <label for="password">Password:</label>
                     <input type="password" id="password" required>
                 </div>
-                <button onclick="signUp()">Register ></button>
+                <button id="regBtn">Register ></button>
                 <div id="status"></div>
-                <a class="recovery-link" onclick="alert('Recovery feature simulation')">Did you get hacked or forgot your password?</a>
+                <a class="recovery-link" id="recoverLink">Did you get hacked or forgot your password? Click here to get a recovery code.</a>
             </div>
         </div>
 
@@ -218,41 +213,55 @@
         </div>
     </div>
 
-    <script>
-        function signUp() {
+    <!-- Подключаем логику как современный JS-модуль -->
+    <script type="module">
+        import { signUpUser, recoverUser } from './auth.js';
+
+        // Назначаем действие на кнопку регистрации
+        document.getElementById('regBtn').addEventListener('click', async () => {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const statusDiv = document.getElementById('status');
 
-            if (!username || !password) {
-                statusDiv.innerText = "Error: Please fill in all fields.";
-                statusDiv.style.color = "#cc0000";
-                return;
-            }
-            if (password.length < 6) {
-                statusDiv.innerText = "Error: Password must be at least 6 characters.";
-                statusDiv.style.color = "#cc0000";
-                return;
-            }
-
-            statusDiv.innerText = "Creating account...";
+            statusDiv.innerText = "Connecting to server...";
             statusDiv.style.color = "#003366";
 
-            setTimeout(() => {
-                const text = "Account Details!\nUsername: " + username + "\nPassword: " + password;
+            const result = await signUpUser(username, password);
+
+            if (!result.success) {
+                statusDiv.innerText = result.message;
+                statusDiv.style.color = "#cc0000";
+            } else {
+                // Если база приняла данные, скачиваем бэкап-файл на ПК
+                const text = "RetroBlox Account Registered!\nUsername: " + username + "\nPassword: " + password;
                 const blob = new Blob([text], { type: "text/plain" });
                 const anchor = document.createElement("a");
                 anchor.download = username + "_account.txt";
                 anchor.href = window.URL.createObjectURL(blob);
                 anchor.click();
 
+                // И переключаем экран на личный кабинет
                 document.getElementById('registerSection').style.display = 'none';
                 document.getElementById('currency').style.display = 'block';
                 document.getElementById('menuPanel').style.display = 'block';
-                document.getElementById('userGreeting').innerText = username;
+                document.getElementById('userGreeting').innerText = result.username;
                 document.getElementById('dashboardSection').style.display = 'block';
-            }, 800);
-        }
+            }
+        });
+
+        // Назначаем действие на ссылку восстановления
+        document.getElementById('recoverLink').addEventListener('click', async () => {
+            const username = prompt("Enter your Username to receive the recovery code:");
+            const statusDiv = document.getElementById('status');
+            if (!username) return;
+
+            statusDiv.innerText = "Processing recovery...";
+            statusDiv.style.color = "#003366";
+
+            const result = await recoverUser(username);
+            statusDiv.innerText = result.message;
+            statusDiv.style.color = result.success ? "#006600" : "#cc0000";
+        });
     </script>
 </body>
 </html>
