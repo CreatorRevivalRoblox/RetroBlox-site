@@ -26,11 +26,11 @@
             justify-content: space-between;
             align-items: center;
         }
-        .roblox-header .logo span {
+        .roblox-header span {
             color: #ffcc00;
         }
         
-        /* Ретро-панель валюты с оригинальными иконками */
+        /* Ретро-панель валюты с иконками 2009 года */
         .currency-box {
             display: none; /* Скрыта до регистрации */
             font-size: 11px;
@@ -47,10 +47,11 @@
             font-weight: bold;
         }
         .currency-item img {
-            width: 16px;
-            height: 16px;
-            margin-right: 4px;
+            width: 20px;
+            height: 14px;
+            margin-right: 5px;
             vertical-align: middle;
+            object-fit: contain;
         }
         .robux-count { color: #00cc00; }
         .tickets-count { color: #ffcc00; }
@@ -158,24 +159,27 @@
 </head>
 <body>
 
-    <!-- Синий хэдер с логотипом и оригинальными иконками валют -->
+    <!-- Синий хэдер с логотипом и проверенными архивными иконками 2009 года -->
     <div class="roblox-header">
         <div class="logo">R<span>O</span>BLOX</div>
         <div id="currency" class="currency-box">
-            <!-- Оригинальная иконка Робукса 2009 года -->
+            
+            <!-- Историческая иконка Robux (зеленая купюра/щит) -->
             <span class="currency-item">
-                <img src="https://rbxcdn.com" alt="R$">
+                <img src="https://archive.org" alt="R$">
                 <span class="robux-count">100</span>
             </span>
-            <!-- Оригинальная иконка Тикета 2009 года -->
+            
+            <!-- Историческая иконка Tickets (два билетика) -->
             <span class="currency-item">
-                <img src="https://rbxcdn.com" alt="Tx">
+                <img src="https://archive.org" alt="Tx">
                 <span class="tickets-count">10</span>
             </span>
+            
         </div>
     </div>
 
-    <!-- Панель старого меню (Games, Catalog и т.д.) -->
+    <!-- Панель ставого меню -->
     <div id="menuPanel" class="roblox-menu">
         <a href="#" onclick="alert('Games list is under construction!')">Games</a>
         <a href="#" onclick="alert('Catalog is under construction!')">Catalog</a>
@@ -184,7 +188,7 @@
     </div>
 
     <div class="main-container">
-        <!-- Блок регистрации (исчезнет после создания аккаунта) -->
+        <!-- Блок регистрации -->
         <div id="registerSection">
             <h2>RetroBlox 2009 - Sign Up</h2>
             <p>Register a new account to build, visit places, and play with friends!</p>
@@ -204,7 +208,7 @@
             </div>
         </div>
 
-        <!-- Новый блок личного кабинета (появится после регистрации) -->
+        <!-- Блок личного кабинета -->
         <div id="dashboardSection" class="dev-box">
             <div class="dev-title">Welcome to RetroBlox, <span id="userGreeting" style="color: #003366;"></span>!</div>
             <p style="font-size: 13px; line-height: 1.5; color: #555555;">
@@ -235,7 +239,6 @@
             statusDiv.style.color = "#003366";
 
             setTimeout(() => {
-                // Скачиваем файл аккаунта
                 const text = "Account Details!\nUsername: " + username + "\nPassword: " + password;
                 const blob = new Blob([text], { type: "text/plain" });
                 const anchor = document.createElement("a");
@@ -243,13 +246,11 @@
                 anchor.href = window.URL.createObjectURL(blob);
                 anchor.click();
 
-                // Обновление страницы без перезагрузки
                 document.getElementById('registerSection').style.display = 'none';
                 document.getElementById('currency').style.display = 'block';
                 document.getElementById('menuPanel').style.display = 'block';
                 document.getElementById('userGreeting').innerText = username;
                 document.getElementById('dashboardSection').style.display = 'block';
-
             }, 800);
         }
     </script>
