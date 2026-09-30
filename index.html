@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ROBLOX.com</title>
+    <title>ROBLOX.com - Authentication</title>
     <style>
-        /* Чистый стиль ROBLOX 2009 */
+        /* Стиль оригинального сайта ROBLOX 2009 года */
         body { 
             background-color: #eeeeee; 
             color: #000000; 
@@ -13,26 +13,24 @@
             padding: 0; 
             font-size: 12px;
         }
-        /* Синяя классическая шапка */
+        /* Синяя классическая шапка из вашего шаблона */
         .roblox-header {
             background-color: #003366;
-            padding: 10px 20px;
+            padding: 15px 20px;
             color: white;
             font-weight: bold;
-            font-size: 24px;
+            font-size: 26px;
             letter-spacing: 1px;
             border-bottom: 3px solid #002244;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .roblox-header .logo span {
-            color: #ffcc00;
-        }
+        .roblox-header .logo span { color: #ffcc00; }
         
-        /* Панель валюты с оригинальными иконками */
+        /* Панель валюты */
         .currency-box {
-            display: none; /* Скрыта до регистрации */
+            display: none; 
             font-size: 11px;
             color: #ffffff;
             font-weight: normal;
@@ -40,47 +38,30 @@
             padding: 4px 10px;
             border: 1px solid #0055aa;
         }
-        .currency-item {
-            display: inline-flex;
-            align-items: center;
-            margin-left: 15px;
-            font-weight: bold;
-        }
-        .currency-item img {
-            width: 16px;
-            height: 16px;
-            margin-right: 5px;
-            vertical-align: middle;
-        }
+        .currency-item { display: inline-flex; align-items: center; margin-left: 15px; font-weight: bold; }
+        .currency-item img { width: 16px; height: 16px; margin-right: 5px; vertical-align: middle; }
         .robux-count { color: #00cc00; }
         .tickets-count { color: #ffcc00; }
 
-        /* Панель старого ретро-меню */
+        /* Панель меню */
         .roblox-menu {
-            display: none; /* Скрыто до регистрации */
+            display: none; 
             background-color: #cccccc;
             border-bottom: 1px solid #555555;
             padding: 6px 20px;
             text-align: left;
         }
-        .roblox-menu a {
-            color: #003366;
-            text-decoration: none;
-            font-weight: bold;
-            margin-right: 20px;
-            font-size: 11px;
-        }
-        .roblox-menu a:hover {
-            text-decoration: underline;
-        }
+        .roblox-menu a { color: #003366; text-decoration: none; font-weight: bold; margin-right: 20px; font-size: 11px; }
+        .roblox-menu a:hover { text-decoration: underline; }
 
-        /* Главный контейнер страницы */
+        /* Главный контейнер */
         .main-container {
             max-width: 800px;
             margin: 30px auto;
             background: #ffffff;
             border: 1px solid #555555;
             padding: 20px;
+            text-align: center;
         }
         h2 {
             color: #003366;
@@ -90,31 +71,20 @@
             padding-bottom: 8px;
             text-align: left;
         }
-        /* Блок регистрации */
-        .registration-table {
+        /* Окно формы в стиле вашей рамки */
+        .auth-table {
             width: 450px;
-            margin: 20px 0;
+            margin: 20px auto;
             background: #f5f5f5;
             border: 1px solid #cccccc;
             padding: 15px;
             text-align: left;
         }
-        .form-group {
-            margin-bottom: 12px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 4px;
-            color: #333333;
-        }
-        input { 
-            width: 90%; 
-            padding: 4px; 
-            border: 1px solid #777777; 
-            font-family: Verdana, sans-serif;
-            font-size: 12px;
-        }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 4px; color: #333333; }
+        input { width: 90%; padding: 4px; border: 1px solid #777777; font-family: Verdana; font-size: 12px; }
+        
+        /* Кнопки */
         button { 
             background-color: #00cc00; 
             color: white; 
@@ -125,14 +95,23 @@
             font-size: 13px;
             margin-top: 10px;
         }
-        button:hover { 
-            background-color: #00ee00; 
-        }
-        #status { margin-top: 15px; font-weight: bold; }
+        button:hover { background-color: #00ee00; }
+        #status { margin-top: 15px; font-weight: bold; text-align: center; }
 
-        /* Блок личного кабинета после входа */
+        /* Подпись под формой из вашего макета */
+        .switch-text {
+            margin-top: 20px;
+            font-size: 11px;
+            color: #444444;
+        }
+        .switch-btn {
+            background-color: #00cc00;
+            margin-top: 5px;
+        }
+
+        /* Блок личного кабинета */
         .dev-box {
-            display: none; /* Скрыт до регистрации */
+            display: none; 
             background: #fff9e6;
             border: 1px solid #ffcc00;
             padding: 20px;
@@ -140,21 +119,7 @@
             text-align: left;
             border-radius: 4px;
         }
-        .dev-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #b36b00;
-            margin-bottom: 10px;
-        }
-        .recovery-link {
-            margin-top: 15px;
-            display: block;
-            color: #003366;
-            text-decoration: underline;
-            cursor: pointer;
-            font-size: 11px;
-        }
-        .recovery-link:hover { color: #ff6600; }
+        .dev-title { font-size: 16px; font-weight: bold; color: #b36b00; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -174,7 +139,7 @@
         </div>
     </div>
 
-    <!-- Панель старого ретро-меню -->
+    <!-- Панель старого меню -->
     <div id="menuPanel" class="roblox-menu">
         <a href="#" onclick="alert('Games list is under construction!')">Games</a>
         <a href="#" onclick="alert('Catalog is under construction!')">Catalog</a>
@@ -183,27 +148,29 @@
     </div>
 
     <div class="main-container">
-        <!-- Блок регистрации -->
-        <div id="registerSection">
-            <h2>RetroBlox 2009 - Sign Up</h2>
-            <p>Register a new account to build, visit places, and play with friends!</p>
-
-            <div class="registration-table">
+        <!-- Секция авторизации / регистрации по вашему шаблону -->
+        <div id="authSection">
+            <h2 id="authTitle">RetroBlox 2009 - Sign Up</h2>
+            
+            <div class="auth-table">
                 <div class="form-group">
-                    <label for="username">Choose Username:</label>
+                    <label for="username">Username:</label>
                     <input type="text" id="username" required placeholder="e.g. Builderman">
                 </div>
                 <div class="form-group">
                     <label for="password">Password:</label>
                     <input type="password" id="password" required>
                 </div>
-                <button onclick="startRegistration()">Register ></button>
+                <button id="mainActionBtn" onclick="handleAuth()">Register ></button>
                 <div id="status"></div>
-                <a class="recovery-link" onclick="startRecovery()">Did you get hacked or forgot your password? Click here to get a recovery code.</a>
             </div>
+
+            <!-- Текст и кнопка переключения по вашему английскому шаблону -->
+            <div class="switch-text" id="toggleNotice">Already registered? Click the green button "Log In"</div>
+            <button class="switch-btn" id="toggleBtn" onclick="toggleMode()">Log In</button>
         </div>
 
-        <!-- Блок личного кабинета -->
+        <!-- Блок личного кабинета после входа -->
         <div id="dashboardSection" class="dev-box">
             <div class="dev-title">Welcome to RetroBlox, <span id="userGreeting" style="color: #003366;"></span>!</div>
             <p style="font-size: 13px; line-height: 1.5; color: #555555;">
@@ -213,9 +180,35 @@
         </div>
     </div>
 
-    <!-- Чистый стандартный скрипт без модулей -->
     <script>
-        function startRegistration() {
+        let isLoginMode = false; // По умолчанию режим регистрации
+
+        // Переключение режимов (Регистрация / Вход)
+        function toggleMode() {
+            const authTitle = document.getElementById('authTitle');
+            const mainActionBtn = document.getElementById('mainActionBtn');
+            const toggleNotice = document.getElementById('toggleNotice');
+            const toggleBtn = document.getElementById('toggleBtn');
+            const statusDiv = document.getElementById('status');
+            
+            statusDiv.innerText = "";
+            isLoginMode = !isLoginMode;
+
+            if (isLoginMode) {
+                authTitle.innerText = "RetroBlox 2009 - Log In";
+                mainActionBtn.innerText = "Log In >";
+                toggleNotice.innerText = "Not registered yet? Click the green button \"Sign Up\"";
+                toggleBtn.innerText = "Sign Up";
+            } else {
+                authTitle.innerText = "RetroBlox 2009 - Sign Up";
+                mainActionBtn.innerText = "Register >";
+                toggleNotice.innerText = "Already registered? Click the green button \"Log In\"";
+                toggleBtn.innerText = "Log In";
+            }
+        }
+
+        // Автономное сохранение файла и вход
+        function handleAuth() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const statusDiv = document.getElementById('status');
@@ -231,39 +224,26 @@
                 return;
             }
 
-            statusDiv.innerText = "Connecting to server...";
+            statusDiv.innerText = isLoginMode ? "Logging in..." : "Creating account...";
             statusDiv.style.color = "#003366";
 
             setTimeout(() => {
-                // Скачиваем файл на компьютер
-                const text = "RetroBlox Account Registered!\nUsername: " + username + "\nPassword: " + password;
+                // Скачиваем файл на компьютер игрока в любом из режимов
+                const actionType = isLoginMode ? "Log In Details" : "Registration Details";
+                const text = actionType + "\nUsername: " + username + "\nPassword: " + password;
                 const blob = new Blob([text], { type: "text/plain" });
                 const anchor = document.createElement("a");
                 anchor.download = username + "_account.txt";
                 anchor.href = window.URL.createObjectURL(blob);
                 anchor.click();
 
-                // Меняем интерфейс
-                document.getElementById('registerSection').style.display = 'none';
+                // Открываем личный кабинет
+                document.getElementById('authSection').style.display = 'none';
                 document.getElementById('currency').style.display = 'block';
                 document.getElementById('menuPanel').style.display = 'block';
                 document.getElementById('userGreeting').innerText = username;
                 document.getElementById('dashboardSection').style.display = 'block';
             }, 600);
-        }
-
-        function startRecovery() {
-            const username = prompt("Enter your Username to receive the recovery code:");
-            const statusDiv = document.getElementById('status');
-            if (!username) return;
-
-            statusDiv.innerText = "Processing recovery...";
-            statusDiv.style.color = "#003366";
-
-            setTimeout(() => {
-                statusDiv.innerText = "Success! Recovery code sent to " + username + "@supabase.com";
-                statusDiv.style.color = "#006600";
-            }, 500);
         }
     </script>
 </body>
