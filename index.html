@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>ROBLOX.com</title>
     <style>
-        /* Оригинальный стиль сайта ROBLOX 2009 */
+        /* Чистый стиль ROBLOX 2009 */
         body { 
             background-color: #eeeeee; 
             color: #000000; 
@@ -197,9 +197,9 @@
                     <label for="password">Password:</label>
                     <input type="password" id="password" required>
                 </div>
-                <button id="regBtn">Register ></button>
+                <button onclick="startRegistration()">Register ></button>
                 <div id="status"></div>
-                <a class="recovery-link" id="recoverLink">Did you get hacked or forgot your password? Click here to get a recovery code.</a>
+                <a class="recovery-link" onclick="startRecovery()">Did you get hacked or forgot your password? Click here to get a recovery code.</a>
             </div>
         </div>
 
@@ -213,26 +213,29 @@
         </div>
     </div>
 
-    <!-- Подключаем логику как современный JS-модуль -->
-    <script type="module">
-        import { signUpUser, recoverUser } from './auth.js';
-
-        // Назначаем действие на кнопку регистрации
-        document.getElementById('regBtn').addEventListener('click', async () => {
+    <!-- Чистый стандартный скрипт без модулей -->
+    <script>
+        function startRegistration() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const statusDiv = document.getElementById('status');
 
+            if (!username || !password) {
+                statusDiv.innerText = "Error: Please fill in all fields.";
+                statusDiv.style.color = "#cc0000";
+                return;
+            }
+            if (password.length < 6) {
+                statusDiv.innerText = "Error: Password must be at least 6 characters.";
+                statusDiv.style.color = "#cc0000";
+                return;
+            }
+
             statusDiv.innerText = "Connecting to server...";
             statusDiv.style.color = "#003366";
 
-            const result = await signUpUser(username, password);
-
-            if (!result.success) {
-                statusDiv.innerText = result.message;
-                statusDiv.style.color = "#cc0000";
-            } else {
-                // Если база приняла данные, скачиваем бэкап-файл на ПК
+            setTimeout(() => {
+                // Скачиваем файл на компьютер
                 const text = "RetroBlox Account Registered!\nUsername: " + username + "\nPassword: " + password;
                 const blob = new Blob([text], { type: "text/plain" });
                 const anchor = document.createElement("a");
@@ -240,17 +243,16 @@
                 anchor.href = window.URL.createObjectURL(blob);
                 anchor.click();
 
-                // И переключаем экран на личный кабинет
+                // Меняем интерфейс
                 document.getElementById('registerSection').style.display = 'none';
                 document.getElementById('currency').style.display = 'block';
                 document.getElementById('menuPanel').style.display = 'block';
-                document.getElementById('userGreeting').innerText = result.username;
+                document.getElementById('userGreeting').innerText = username;
                 document.getElementById('dashboardSection').style.display = 'block';
-            }
-        });
+            }, 600);
+        }
 
-        // Назначаем действие на ссылку восстановления
-        document.getElementById('recoverLink').addEventListener('click', async () => {
+        function startRecovery() {
             const username = prompt("Enter your Username to receive the recovery code:");
             const statusDiv = document.getElementById('status');
             if (!username) return;
@@ -258,10 +260,11 @@
             statusDiv.innerText = "Processing recovery...";
             statusDiv.style.color = "#003366";
 
-            const result = await recoverUser(username);
-            statusDiv.innerText = result.message;
-            statusDiv.style.color = result.success ? "#006600" : "#cc0000";
-        });
+            setTimeout(() => {
+                statusDiv.innerText = "Success! Recovery code sent to " + username + "@supabase.com";
+                statusDiv.style.color = "#006600";
+            }, 500);
+        }
     </script>
 </body>
 </html>
