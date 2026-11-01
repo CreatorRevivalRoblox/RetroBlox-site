@@ -1,97 +1,67 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RetroBlox — Вход и Регистрация (2009)</title>
+    <title>ROBLOX.com - Authentication</title>
     <style>
-        body { font-family: Verdana, sans-serif; background-color: #E1E1E1; margin: 0; padding: 20px; text-align: center; }
-        .container { background: #FFFFFF; border: 2px solid #7F7F7F; width: 400px; margin: 50px auto; padding: 20px; box-shadow: 4px 4px 0px #7F7F7F; text-align: left; }
-        h2 { color: #002966; margin-top: 0; border-bottom: 2px solid #002966; padding-bottom: 5px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
-        input[type="text"], input[type="password"] { width: 95%; padding: 5px; border: 1px solid #A0A0A0; background: #FFF; font-size: 14px; }
-        .buttons { margin-top: 20px; display: flex; gap: 10px; }
-        button { background: #E1E1E1; border: 2px solid; border-color: #FFF #7F7F7F #7F7F7F #FFF; padding: 5px 15px; font-weight: bold; cursor: pointer; font-size: 14px; }
-        button:active { border-color: #7F7F7F #FFF #FFF #7F7F7F; }
+        body { font-family: 'Lucida Grande', Verdana, sans-serif; background: #5A5A5A; margin: 0; padding: 0; color: #333; }
+        #Header { background: #E1E1E1; border-bottom: 1px solid #A7A7A7; padding: 10px; height: 45px; }
+        #Container { width: 900px; margin: 20px auto; background: #FFF; border: 1px solid #A7A7A7; padding: 25px; min-height: 400px; }
+        .auth-box { width: 400px; margin: 40px auto; border: 1px solid #CCC; padding: 20px; background: #F9F9F9; }
+        h1 { font-size: 24px; color: #003366; margin-top: 0; font-weight: normal; }
+        .form-label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 12px; }
+        .form-input { width: 380px; padding: 4px; margin-bottom: 15px; border: 1px solid #7F9DB9; font-size: 13px; }
+        .button-row { margin-top: 10px; }
+        .rbx-btn { background: url('https://archive.org') repeat-x; border: 1px solid #777; color: #000; font-weight: bold; padding: 4px 12px; cursor: pointer; font-size: 13px; }
     </style>
-    <script src="https://jsdelivr.net"></script>
+    <script src="https://unpkg.com"></script>
 </head>
 <body>
-
-<div class="container">
-    <h2>RetroBlox Authentication</h2>
-    
-    <div class="form-group">
-        <label for="username-input">Имя пользователя (Никнейм):</label>
-        <input type="text" id="username-input" placeholder="Введите ник...">
+    <div id="Header">
+        <img src="https://archive.org" height="40" alt="ROBLOX">
     </div>
-    
-    <div class="form-group">
-        <label for="password-input">Пароль:</label>
-        <input type="password" id="password-input" placeholder="Введите пароль...">
+    <div id="Container">
+        <div class="auth-box">
+            <h1>Log In / Register</h1>
+            <label class="form-label">Username:</label>
+            <input type="text" id="username" class="form-input">
+            <label class="form-label">Password:</label>
+            <input type="password" id="password" class="form-input">
+            <div class="button-row">
+                <button id="loginBtn" class="rbx-btn">Log In</button>
+                <button id="registerBtn" class="rbx-btn" style="background:#E1E1E1;">Register</button>
+            </div>
+        </div>
     </div>
-    
-    <div class="buttons">
-        <button id="login-submit-btn">Войти</button>
-        <button id="register-submit-btn">Регистрация</button>
-    </div>
-</div>
+    <script>
+        const supabaseUrl = 'https://supabase.co';
+        const supabaseKey = 'sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-<script>
-const supabaseUrl = 'https://supabase.co'; 
-const supabaseKey = 'sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc'; 
-const supabase = supabase.createClient(supabaseUrl, supabaseKey); 
+        async function handleRegister() {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value;
+            if (!user || !pass) { alert('Please enter both username and password.'); return; }
+            const { data: existingUser } = await supabase.from('users').select('username').eq('username', user).maybeSingle();
+            if (existingUser) { alert('This username is already taken!'); return; }
+            const { error } = await supabase.from('users').insert([{ username: user, password_hash: pass }]);
+            if (error) { alert('Registration failed: ' + error.message); } else { alert('Registration successful! You can now log in.'); }
+        }
 
-async function registerUser(username, password) { 
-    if (!username || !password) { 
-        alert("Заполните все поля!"); 
-        return; 
-    } 
-    const { data: existingUser, error: checkError } = await supabase.from('users').select('username').eq('username', username).maybeSingle(); 
-    if (existingUser) { 
-        alert("Этот никнейм уже занят! Придумайте другой."); 
-        return; 
-    } 
-    const { data, error } = await supabase.from('users').insert([{ username: username, password_hash: password }]); 
-    if (error) { 
-        alert("Ошибка при регистрации: " + error.message); 
-    } else { 
-        alert("Регистрация успешна! Теперь вы можете войти."); 
-    } 
-} 
+        async function handleLogin() {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value;
+            if (!user || !pass) { alert('Please enter both username and password.'); return; }
+            const { data: userData, error } = await supabase.from('users').select('id, username, password_hash').eq('username', user).maybeSingle();
+            if (error || !userData) { alert('User not found!'); return; }
+            if (userData.password_hash !== pass) { alert('Incorrect password!'); return; }
+            alert('Welcome back to RetroBlox!');
+            localStorage.setItem('userId', userData.id);
+            localStorage.setItem('username', userData.username);
+        }
 
-async function loginUser(username, password) { 
-    if (!username || !password) { 
-        alert("Введите ник и пароль!"); 
-        return; 
-    } 
-    const { data: user, error } = await supabase.from('users').select('id, username, password_hash').eq('username', username).maybeSingle(); 
-    if (error || !user) { 
-        alert("Пользователь с таким ником не найден!"); 
-        return; 
-    } 
-    if (user.password_hash !== password) { 
-        alert("Неверный пароль!"); 
-        return; 
-    } 
-    alert("Вы успешно вошли, добро пожаловать в RetroBlox!"); 
-    localStorage.setItem('userId', user.id); 
-    localStorage.setItem('username', user.username); 
-} 
-
-document.getElementById('register-submit-btn')?.addEventListener('click', () => { 
-    const userInp = document.getElementById('username-input')?.value; 
-    const passInp = document.getElementById('password-input')?.value; 
-    registerUser(userInp, passInp); 
-}); 
-
-document.getElementById('login-submit-btn')?.addEventListener('click', () => { 
-    const userInp = document.getElementById('username-input')?.value; 
-    const passInp = document.getElementById('password-input')?.value; 
-    loginUser(userInp, passInp); 
-});
-</script>
-
+        document.getElementById('registerBtn').addEventListener('click', handleRegister);
+        document.getElementById('loginBtn').addEventListener('click', handleLogin);
+    </script>
 </body>
 </html>
