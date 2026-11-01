@@ -1,250 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>ROBLOX.com - Authentication</title>
-    <style>
-        /* Стиль оригинального сайта ROBLOX 2009 года */
-        body { 
-            background-color: #eeeeee; 
-            color: #000000; 
-            font-family: Verdana, sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            font-size: 12px;
-        }
-        /* Синяя классическая шапка из вашего шаблона */
-        .roblox-header {
-            background-color: #003366;
-            padding: 15px 20px;
-            color: white;
-            font-weight: bold;
-            font-size: 26px;
-            letter-spacing: 1px;
-            border-bottom: 3px solid #002244;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .roblox-header .logo span { color: #ffcc00; }
-        
-        /* Панель валюты */
-        .currency-box {
-            display: none; 
-            font-size: 11px;
-            color: #ffffff;
-            font-weight: normal;
-            background: #002244;
-            padding: 4px 10px;
-            border: 1px solid #0055aa;
-        }
-        .currency-item { display: inline-flex; align-items: center; margin-left: 15px; font-weight: bold; }
-        .currency-item img { width: 16px; height: 16px; margin-right: 5px; vertical-align: middle; }
-        .robux-count { color: #00cc00; }
-        .tickets-count { color: #ffcc00; }
+// Инициализация Supabase (твои ключи остаются прежними)
+const supabaseUrl = 'https://supabase.co';
+const supabaseKey = 'sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc';
+const supabase = supabasejs.createClient(supabaseUrl, supabaseKey);
 
-        /* Панель меню */
-        .roblox-menu {
-            display: none; 
-            background-color: #cccccc;
-            border-bottom: 1px solid #555555;
-            padding: 6px 20px;
-            text-align: left;
-        }
-        .roblox-menu a { color: #003366; text-decoration: none; font-weight: bold; margin-right: 20px; font-size: 11px; }
-        .roblox-menu a:hover { text-decoration: underline; }
+// ==========================================
+// 1. ФУНКЦИЯ РЕГИСТРАЦИИ (Защита от дубликатов)
+// ==========================================
+async function registerUser(username, password) {
+    if (!username || !password) {
+        alert("Заполните все поля!");
+        return;
+    }
 
-        /* Главный контейнер */
-        .main-container {
-            max-width: 800px;
-            margin: 30px auto;
-            background: #ffffff;
-            border: 1px solid #555555;
-            padding: 20px;
-            text-align: center;
-        }
-        h2 {
-            color: #003366;
-            font-size: 18px;
-            margin-top: 0;
-            border-bottom: 1px dashed #555555;
-            padding-bottom: 8px;
-            text-align: left;
-        }
-        /* Окно формы в стиле вашей рамки */
-        .auth-table {
-            width: 450px;
-            margin: 20px auto;
-            background: #f5f5f5;
-            border: 1px solid #cccccc;
-            padding: 15px;
-            text-align: left;
-        }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 4px; color: #333333; }
-        input { width: 90%; padding: 4px; border: 1px solid #777777; font-family: Verdana; font-size: 12px; }
-        
-        /* Кнопки */
-        button { 
-            background-color: #00cc00; 
-            color: white; 
-            border: 2px solid #009900; 
-            padding: 6px 15px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: 13px;
-            margin-top: 10px;
-        }
-        button:hover { background-color: #00ee00; }
-        #status { margin-top: 15px; font-weight: bold; text-align: center; }
+    // Сначала проверяем, нет ли уже такого игрока в базе
+    const { data: existingUser, error: checkError } = await supabase
+        .from('users')
+        .select('username')
+        .eq('username', username)
+        .maybeSingle(); // Ищет один ник
 
-        /* Подпись под формой из вашего макета */
-        .switch-text {
-            margin-top: 20px;
-            font-size: 11px;
-            color: #444444;
-        }
-        .switch-btn {
-            background-color: #00cc00;
-            margin-top: 5px;
-        }
+    if (existingUser) {
+        alert("Этот никнейм уже занят! Придумайте другой.");
+        return;
+    }
 
-        /* Блок личного кабинета */
-        .dev-box {
-            display: none; 
-            background: #fff9e6;
-            border: 1px solid #ffcc00;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-            border-radius: 4px;
-        }
-        .dev-title { font-size: 16px; font-weight: bold; color: #b36b00; margin-bottom: 10px; }
-    </style>
-</head>
-<body>
+    // Если всё чисто — регистрируем
+    const { data, error } = await supabase
+        .from('users')
+        .insert([{ username: username, password_hash: password }]);
 
-    <!-- Синий хэдер -->
-    <div class="roblox-header">
-        <div class="logo">R<span>O</span>BLOX</div>
-        <div id="currency" class="currency-box">
-            <span class="currency-item">
-                <img src="https://rbxcdn.com" alt="R$">
-                <span class="robux-count">100</span>
-            </span>
-            <span class="currency-item">
-                <img src="https://rbxcdn.com" alt="Tx">
-                <span class="tickets-count">10</span>
-            </span>
-        </div>
-    </div>
+    if (error) {
+        alert("Ошибка при регистрации: " + error.message);
+    } else {
+        alert("Регистрация успешна! Теперь вы можете войти.");
+    }
+}
 
-    <!-- Панель старого меню -->
-    <div id="menuPanel" class="roblox-menu">
-        <a href="#" onclick="alert('Games list is under construction!')">Games</a>
-        <a href="#" onclick="alert('Catalog is under construction!')">Catalog</a>
-        <a href="#" onclick="alert('Forum is under construction!')">Forum</a>
-        <a href="#" onclick="alert('People search is under construction!')">People</a>
-    </div>
+// ==========================================
+// 2. ФУНКЦИЯ ВХОДА (Защита от «белиберды»)
+// ==========================================
+async function loginUser(username, password) {
+    if (!username || !password) {
+        alert("Введите ник и пароль!");
+        return;
+    }
 
-    <div class="main-container">
-        <!-- Секция авторизации / регистрации по вашему шаблону -->
-        <div id="authSection">
-            <h2 id="authTitle">RetroBlox 2009 - Sign Up</h2>
-            
-            <div class="auth-table">
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" required placeholder="e.g. Builderman">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" required>
-                </div>
-                <button id="mainActionBtn" onclick="handleAuth()">Register ></button>
-                <div id="status"></div>
-            </div>
+    // Ищем игрока в базе по точному нику
+    const { data: user, error } = await supabase
+        .from('users')
+        .select('id, username, password_hash')
+        .eq('username', username)
+        .maybeSingle();
 
-            <!-- Текст и кнопка переключения по вашему английскому шаблону -->
-            <div class="switch-text" id="toggleNotice">Already registered? Click the green button "Log In"</div>
-            <button class="switch-btn" id="toggleBtn" onclick="toggleMode()">Log In</button>
-        </div>
+    // ЗАЩИТА: Если база пустая или юзер не найден — выдаем ошибку, а не пускаем!
+    if (error || !user) {
+        alert("Пользователь с таким ником не найден!");
+        return;
+    }
 
-        <!-- Блок личного кабинета после входа -->
-        <div id="dashboardSection" class="dev-box">
-            <div class="dev-title">Welcome to RetroBlox, <span id="userGreeting" style="color: #003366;"></span>!</div>
-            <p style="font-size: 13px; line-height: 1.5; color: #555555;">
-                Sorry, but the site is currently under development!<br>
-                Our developers are working hard to restore the client, maps, and database from 2009. Stay tuned!
-            </p>
-        </div>
-    </div>
+    // Проверяем пароль
+    if (user.password_hash !== password) {
+        alert("Неверный пароль!");
+        return;
+    }
 
-    <script>
-        let isLoginMode = false; // По умолчанию режим регистрации
+    // Если пароль совпал — пускаем в RetroBlox!
+    alert("Вы успешно вошли, добро пожаловать в 2009!");
+    
+    // Здесь твой старый код, который запускает лаунчер или перенаправляет в игру:
+    localStorage.setItem('userId', user.id);
+    localStorage.setItem('username', user.username);
+    // window.location.href = "game.html"; // если есть страница игры
+}
 
-        // Переключение режимов (Регистрация / Вход)
-        function toggleMode() {
-            const authTitle = document.getElementById('authTitle');
-            const mainActionBtn = document.getElementById('mainActionBtn');
-            const toggleNotice = document.getElementById('toggleNotice');
-            const toggleBtn = document.getElementById('toggleBtn');
-            const statusDiv = document.getElementById('status');
-            
-            statusDiv.innerText = "";
-            isLoginMode = !isLoginMode;
+// Подключаем функции к кнопкам на твоей странице
+// (замени 'btn-register' и 'btn-login' на ID твоих реальных кнопок, если они другие)
+document.getElementById('register-submit-btn')?.addEventListener('click', () => {
+    const userInp = document.getElementById('username-input')?.value;
+    const passInp = document.getElementById('password-input')?.value;
+    registerUser(userInp, passInp);
+});
 
-            if (isLoginMode) {
-                authTitle.innerText = "RetroBlox 2009 - Log In";
-                mainActionBtn.innerText = "Log In >";
-                toggleNotice.innerText = "Not registered yet? Click the green button \"Sign Up\"";
-                toggleBtn.innerText = "Sign Up";
-            } else {
-                authTitle.innerText = "RetroBlox 2009 - Sign Up";
-                mainActionBtn.innerText = "Register >";
-                toggleNotice.innerText = "Already registered? Click the green button \"Log In\"";
-                toggleBtn.innerText = "Log In";
-            }
-        }
-
-        // Автономное сохранение файла и вход
-        function handleAuth() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const statusDiv = document.getElementById('status');
-
-            if (!username || !password) {
-                statusDiv.innerText = "Error: Please fill in all fields.";
-                statusDiv.style.color = "#cc0000";
-                return;
-            }
-            if (password.length < 6) {
-                statusDiv.innerText = "Error: Password must be at least 6 characters.";
-                statusDiv.style.color = "#cc0000";
-                return;
-            }
-
-            statusDiv.innerText = isLoginMode ? "Logging in..." : "Creating account...";
-            statusDiv.style.color = "#003366";
-
-            setTimeout(() => {
-                // Скачиваем файл на компьютер игрока в любом из режимов
-                const actionType = isLoginMode ? "Log In Details" : "Registration Details";
-                const text = actionType + "\nUsername: " + username + "\nPassword: " + password;
-                const blob = new Blob([text], { type: "text/plain" });
-                const anchor = document.createElement("a");
-                anchor.download = username + "_account.txt";
-                anchor.href = window.URL.createObjectURL(blob);
-                anchor.click();
-
-                // Открываем личный кабинет
-                document.getElementById('authSection').style.display = 'none';
-                document.getElementById('currency').style.display = 'block';
-                document.getElementById('menuPanel').style.display = 'block';
-                document.getElementById('userGreeting').innerText = username;
-                document.getElementById('dashboardSection').style.display = 'block';
-            }, 600);
-        }
-    </script>
-</body>
-</html>
+document.getElementById('login-submit-btn')?.addEventListener('click', () => {
+    const userInp = document.getElementById('username-input')?.value;
+    const passInp = document.getElementById('password-input')?.value;
+    loginUser(userInp, passInp);
+});
