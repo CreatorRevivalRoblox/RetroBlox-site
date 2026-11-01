@@ -36,15 +36,15 @@
     <script>
         const supabaseUrl = 'https://supabase.co';
         const supabaseKey = 'sb_publishable_key_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnb2lyZGZ1Y3ZpYW9rdXVldnNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4MDI1NjQsImV4cCI6MjA3NDM3ODU2NH0.t1LR2xCLdL0q7XP5exF0fQ_XFW52Ifc';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
         async function handleRegister() {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value;
             if (!user || !pass) { alert('Please enter both username and password.'); return; }
-            const { data: existingUser } = await supabase.from('users').select('username').eq('username', user).maybeSingle();
-            if (existingUser) { alert('This username is already taken!'); return; }
-            const { error } = await supabase.from('users').insert([{ username: user, password_hash: pass }]);
+            const { data: existingUser } = await supabaseClient.from('users').select('username').eq('username', user);
+            if (existingUser && existingUser.length > 0) { alert('This username is already taken!'); return; }
+            const { error } = await supabaseClient.from('users').insert([{ username: user, password_hash: pass }]);
             if (error) { alert('Registration failed: ' + error.message); } else { alert('Registration successful! You can now log in.'); }
         }
 
@@ -52,12 +52,13 @@
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value;
             if (!user || !pass) { alert('Please enter both username and password.'); return; }
-            const { data: userData, error } = await supabase.from('users').select('id, username, password_hash').eq('username', user).maybeSingle();
-            if (error || !userData) { alert('User not found!'); return; }
-            if (userData.password_hash !== pass) { alert('Incorrect password!'); return; }
+            const { data: userData, error } = await supabaseClient.from('users').select('id, username, password_hash').eq('username', user);
+            if (error || !userData || userData.length === 0) { alert('User not found!'); return; }
+            const loggedInUser = userData[0];
+            if (loggedInUser.password_hash !== pass) { alert('Incorrect password!'); return; }
             alert('Welcome back to RetroBlox!');
-            localStorage.setItem('userId', userData.id);
-            localStorage.setItem('username', userData.username);
+            localStorage.setItem('userId', loggedInUser.id);
+            localStorage.setItem('username', loggedInUser.username);
         }
 
         document.getElementById('registerBtn').addEventListener('click', handleRegister);
